@@ -2,6 +2,8 @@
 #include "layout.h"
 
 static GBitmap *s_cache;
+// 確保に一度失敗したら、以降は毎フレーム直接描く (再描画のたびに確保を試みない)
+static bool s_cache_unavailable;
 
 // --- Elements ---
 
@@ -67,6 +69,7 @@ static void prv_store_cache(GContext *ctx, GRect bounds) {
   s_cache = gbitmap_create_blank(bounds.size, GBitmapFormat8Bit);
   if (!s_cache) {
     APP_LOG(APP_LOG_LEVEL_WARNING, "background cache alloc failed; drawing every frame");
+    s_cache_unavailable = true;
     return;
   }
   GBitmap *fb = graphics_capture_frame_buffer(ctx);
@@ -89,10 +92,16 @@ void background_render(GContext *ctx, GRect bounds) {
     return;
   }
   prv_draw(ctx, bounds);
-  prv_store_cache(ctx, bounds);
+  if (!s_cache_unavailable) {
+    prv_store_cache(ctx, bounds);
+  }
 }
 
 void background_deinit(void) {
-  gbitmap_destroy(s_cache);
-  s_cache = NULL;
+  // SDK は NULL を渡してよいと明記していないため、確保できたときだけ破棄する
+  if (s_cache) {
+    gbitmap_destroy(s_cache);
+    s_cache = NULL;
+  }
+  s_cache_unavailable = false;
 }

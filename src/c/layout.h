@@ -36,8 +36,8 @@
 // 開き角のうち先端からこの割合までを明るいライムにする
 #define FAN_LIME_PERCENT 34
 // 後縁の分光: 半径 0.74R〜R+1 に幅 1.4° の弧を 1.6° 間隔で3本 (角度は 1/10 度)
-#define FAN_IRIS_INNER_RADIUS 78
-#define FAN_IRIS_OUTER_RADIUS 107
+#define FAN_IRIS_INNER_RADIUS DISC_INNER_RADIUS
+#define FAN_IRIS_OUTER_RADIUS (DISC_RADIUS + 1)
 #define FAN_IRIS_WIDTH_X10 14
 #define FAN_IRIS_STEP_X10 16
 

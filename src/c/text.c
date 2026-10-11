@@ -3,6 +3,8 @@
 // 1文字の幅を測るための仮の枠。最大のグリフ (時刻 44px) が収まれば十分
 #define GLYPH_MEASURE_BOX GRect(0, 0, 100, 100)
 #define VALUE_TMP_LEN 16
+// 1回に描く最大文字数。最長は日付 ("WED 16 SEP") と歩数 ("99,999,999") で、これを超えた分は描かない
+#define TEXT_MAX_GLYPHS 16
 
 static int16_t prv_glyph_width(char c, GFont font) {
   char glyph[2] = { c, '\0' };
@@ -13,9 +15,15 @@ static int16_t prv_glyph_width(char c, GFont font) {
 GRect text_draw(GContext *ctx, const char *text, const TextStyle *style, GPoint anchor,
                 GTextAlignment align, GColor color) {
   size_t count = strlen(text);
+  if (count > TEXT_MAX_GLYPHS) {
+    count = TEXT_MAX_GLYPHS;
+  }
+  // 幅の計測は文字ごとにレイアウト計算が走るため、1回だけ測って描画でも使い回す
+  int16_t widths[TEXT_MAX_GLYPHS];
   int32_t total_x10 = 0;
   for (size_t i = 0; i < count; i++) {
-    total_x10 += prv_glyph_width(text[i], style->font) * 10;
+    widths[i] = prv_glyph_width(text[i], style->font);
+    total_x10 += widths[i] * 10;
   }
   if (count > 1) {
     total_x10 += style->tracking_x10 * (int32_t)(count - 1);
@@ -33,12 +41,11 @@ GRect text_draw(GContext *ctx, const char *text, const TextStyle *style, GPoint 
   graphics_context_set_text_color(ctx, color);
   for (size_t i = 0; i < count; i++) {
     char glyph[2] = { text[i], '\0' };
-    int16_t w = prv_glyph_width(text[i], style->font);
     // 枠を詰めるとグリフの張り出しが切れるので、幅・高さとも余裕を持たせる
-    GRect box = GRect(x_x10 / 10, top, w + style->ascent, style->ascent * 2);
+    GRect box = GRect(x_x10 / 10, top, widths[i] + style->ascent, style->ascent * 2);
     graphics_draw_text(ctx, glyph, style->font, box, GTextOverflowModeWordWrap,
                        GTextAlignmentLeft, NULL);
-    x_x10 += w * 10 + style->tracking_x10;
+    x_x10 += widths[i] * 10 + style->tracking_x10;
   }
   return GRect(left, top, total_x10 / 10, style->ascent);
 }

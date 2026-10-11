@@ -61,9 +61,11 @@ static int32_t prv_percent_of(int32_t angle, int32_t percent) {
   return angle * percent / PERCENT;
 }
 
+// 分光の色。扇の後縁はこの色数だけ弧を並べ、鏡面の IRIS テーブルはこの添字で色を選ぶ
+static const uint8_t IRIS_COLORS_ARGB8[] = { GColorCyanARGB8, GColorMagentaARGB8, GColorYellowARGB8 };
+
 static GColor prv_iris_color(uint8_t index) {
-  const GColor colors[] = { GColorCyan, GColorMagenta, GColorYellow };
-  return colors[index];
+  return (GColor) { .argb = IRIS_COLORS_ARGB8[index] };
 }
 
 // --- Public ---
@@ -77,7 +79,7 @@ void disc_draw_minute_fan(GContext *ctx, const struct tm *t, bool bt_connected) 
   prv_fill_wedge(ctx, 0, DISC_RADIUS, split, a0 + w, bt_connected ? COLOR_GREEN : COLOR_GRAY);
 
   // 後縁の分光
-  for (int i = 0; i < 3; i++) {
+  for (size_t i = 0; i < ARRAY_LENGTH(IRIS_COLORS_ARGB8); i++) {
     int32_t s = a0 + w + DEG_X10_TO_TRIGANGLE(i * FAN_IRIS_STEP_X10);
     int32_t e = s + DEG_X10_TO_TRIGANGLE(FAN_IRIS_WIDTH_X10);
     prv_fill_wedge(ctx, FAN_IRIS_INNER_RADIUS, FAN_IRIS_OUTER_RADIUS, s, e, prv_iris_color(i));
