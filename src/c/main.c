@@ -30,26 +30,31 @@ static void prv_background_update_proc(Layer *layer, GContext *ctx) {
   background_render(ctx, layer_get_bounds(layer), &s_background_state);
 }
 
-// 値が長いとラベルの定位置に重なるので、そのときだけ値から DATA_LABEL_GAP 離す
-static void prv_draw_data(GContext *ctx, int32_t value, GPoint value_anchor, GPoint label_anchor,
-                          const char *label, GTextAlignment align) {
-  const TextStyle value_style = { s_font_value, VALUE_ASCENT, 0 };
-  const TextStyle label_style = { s_font_label, LABEL_ASCENT, LABEL_TRACKING_X10 };
-
+static GRect prv_draw_value(GContext *ctx, int32_t value, GPoint anchor, GTextAlignment align) {
+  const TextStyle style = { s_font_value, VALUE_ASCENT, 0 };
   char buf[VALUE_BUF_LEN];
   bool available = text_format_value(buf, sizeof(buf), value);
-  GRect drawn = text_draw(ctx, buf, &value_style, value_anchor, align,
-                          available ? COLOR_WHITE : COLOR_GRAY);
+  return text_draw(ctx, buf, &style, anchor, align, available ? COLOR_WHITE : COLOR_GRAY);
+}
 
-  GPoint anchor = label_anchor;
+static GRect prv_draw_label(GContext *ctx, const char *label, GPoint anchor,
+                            GTextAlignment align) {
+  const TextStyle style = { s_font_label, LABEL_ASCENT, LABEL_TRACKING_X10 };
+  return text_draw(ctx, label, &style, anchor, align, COLOR_GRAY);
+}
+
+// 左右とも「数字 ラベル」の順に並べる。anchor は左揃えなら数字の左端、右揃えならラベルの右端
+static void prv_draw_data(GContext *ctx, int32_t value, GPoint anchor, const char *label,
+                          GTextAlignment align) {
   if (align == GTextAlignmentLeft) {
-    int16_t min_x = drawn.origin.x + drawn.size.w + DATA_LABEL_GAP;
-    anchor.x = anchor.x > min_x ? anchor.x : min_x;
+    GRect drawn = prv_draw_value(ctx, value, anchor, align);
+    anchor.x = drawn.origin.x + drawn.size.w + DATA_LABEL_GAP;
+    prv_draw_label(ctx, label, anchor, align);
   } else {
-    int16_t max_x = drawn.origin.x - DATA_LABEL_GAP;
-    anchor.x = anchor.x < max_x ? anchor.x : max_x;
+    GRect drawn = prv_draw_label(ctx, label, anchor, align);
+    anchor.x = drawn.origin.x - DATA_LABEL_GAP;
+    prv_draw_value(ctx, value, anchor, align);
   }
-  text_draw(ctx, label, &label_style, anchor, align, COLOR_GRAY);
 }
 
 static void prv_dynamic_update_proc(Layer *layer, GContext *ctx) {
@@ -58,8 +63,8 @@ static void prv_dynamic_update_proc(Layer *layer, GContext *ctx) {
 
   text_draw(ctx, s_time_buf, &time_style, TIME_ANCHOR, GTextAlignmentCenter, COLOR_WHITE);
   text_draw(ctx, s_date_buf, &date_style, DATE_ANCHOR, GTextAlignmentCenter, COLOR_DATE);
-  prv_draw_data(ctx, s_steps, STEPS_ANCHOR, STEPS_LABEL_ANCHOR, STEPS_LABEL, GTextAlignmentLeft);
-  prv_draw_data(ctx, s_bpm, BPM_ANCHOR, BPM_LABEL_ANCHOR, BPM_LABEL, GTextAlignmentRight);
+  prv_draw_data(ctx, s_steps, STEPS_ANCHOR, STEPS_LABEL, GTextAlignmentLeft);
+  prv_draw_data(ctx, s_bpm, BPM_ANCHOR, BPM_LABEL, GTextAlignmentRight);
 }
 
 // --- State updates ---

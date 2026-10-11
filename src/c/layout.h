@@ -74,10 +74,8 @@
 #define LABEL_TRACKING_X10 10
 
 #define STEPS_ANCHOR GPoint(6, 222)
-#define STEPS_LABEL_ANCHOR GPoint(44, 222)
 #define STEPS_LABEL "STEPS"
 #define BPM_ANCHOR GPoint(194, 222)
-#define BPM_LABEL_ANCHOR GPoint(170, 222)
 #define BPM_LABEL "BPM"
-// 値が長くてラベルの定位置に届くときに空ける最小の間隔
+// 値とラベルの間隔。桁数によらず左右で同じ並びに見えるよう、ラベルは値の端から置く
 #define DATA_LABEL_GAP 4
