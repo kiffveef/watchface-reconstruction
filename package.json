@@ -29,7 +29,7 @@
         },
         {
           "type": "font",
-          "name": "FONT_DATE_9",
+          "name": "FONT_DATE_11",
           "file": "fonts/Outfit-Text.ttf",
           "characterRegex": "[A-Z0-9 ]",
           "compatibility": "2.7"

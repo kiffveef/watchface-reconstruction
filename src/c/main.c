@@ -154,7 +154,7 @@ static void prv_window_load(Window *window) {
   GRect bounds = layer_get_bounds(window_layer);
 
   s_font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TIME_44));
-  s_font_date = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DATE_9));
+  s_font_date = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DATE_11));
   s_font_value = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_VALUE_13));
   s_font_label = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LABEL_8));
 

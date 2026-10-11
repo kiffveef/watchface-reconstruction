@@ -56,9 +56,10 @@
 // 下線の幅は時刻のフォントサイズと揃える (仕様書の 34px / 34 と同じ比率)
 #define TIME_UNDERLINE_RECT GRect(78, 122, 44, 2)
 
-// 8px では「6」が潰れて読めないため 9px にしている
+// 仕様書の 8px では「6」が潰れて読めないため 11px にしている。
+// 最も幅の広い日付 ("MON 04 MAY") でもキャップの縁 (半径 51) の内側に収まる上限のサイズ
 #define DATE_ANCHOR GPoint(100, 136)
-#define DATE_ASCENT 9
+#define DATE_ASCENT 11
 #define DATE_TRACKING_X10 10
 #define DATE_FORMAT "%a %d %b"
 
