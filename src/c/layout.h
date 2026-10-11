@@ -48,11 +48,12 @@
 
 // --- Text (anchor の y はベースライン) ---
 // ASCENT はベースラインから描画矩形の上端までの距離。グリフ上の余白込みでエミュレータで合わせた値
+// 時刻は Saira (字幅75)。Outfit より字幅が狭いぶん、キャップ内で数字を大きくできる
 // 数字の実際の塗り範囲がキャップの中心 (100, 100) に来る位置。字幅計算に含まれる余白ぶん x を 1px 右に寄せている
-#define TIME_ANCHOR GPoint(101, 112)
-#define TIME_ASCENT 34
-#define TIME_TRACKING_X10 (-18)
-#define TIME_UNDERLINE_RECT GRect(83, 121, 34, 2)
+#define TIME_ANCHOR GPoint(101, 115)
+#define TIME_ASCENT 44
+#define TIME_TRACKING_X10 (-10)
+#define TIME_UNDERLINE_RECT GRect(83, 122, 34, 2)
 
 // 8px では「6」が潰れて読めないため 9px にしている
 #define DATE_ANCHOR GPoint(100, 136)

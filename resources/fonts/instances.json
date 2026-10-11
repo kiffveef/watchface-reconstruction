@@ -1,11 +1,18 @@
 {
-  "source": "source/Outfit[wght].ttf",
-  "glyph_substitutions": {
-    "1": "one.ss01"
+  "sources": {
+    "outfit": {
+      "file": "source/Outfit[wght].ttf",
+      "glyph_substitutions": {
+        "1": "one.ss01"
+      }
+    },
+    "saira": {
+      "file": "source/Saira[wdth,wght].ttf"
+    }
   },
   "instances": {
-    "Outfit-Time.ttf": { "wght": 700 },
-    "Outfit-Text.ttf": { "wght": 600 },
-    "Outfit-Value.ttf": { "wght": 400 }
+    "Saira-Time.ttf": { "source": "saira", "axes": { "wdth": 75, "wght": 800 } },
+    "Outfit-Text.ttf": { "source": "outfit", "axes": { "wght": 600 } },
+    "Outfit-Value.ttf": { "source": "outfit", "axes": { "wght": 400 } }
   }
 }

@@ -22,8 +22,8 @@
       "media": [
         {
           "type": "font",
-          "name": "FONT_TIME_34",
-          "file": "fonts/Outfit-Time.ttf",
+          "name": "FONT_TIME_44",
+          "file": "fonts/Saira-Time.ttf",
           "characterRegex": "[0-9:]",
           "compatibility": "2.7"
         },
