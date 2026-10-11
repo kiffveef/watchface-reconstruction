@@ -37,7 +37,7 @@
         {
           "type": "font",
           "name": "FONT_VALUE_15",
-          "file": "fonts/Outfit-Text.ttf",
+          "file": "fonts/Outfit-Value.ttf",
           "characterRegex": "[0-9,-]",
           "compatibility": "2.7"
         },
