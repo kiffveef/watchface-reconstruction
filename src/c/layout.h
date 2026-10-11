@@ -53,7 +53,8 @@
 #define TIME_ANCHOR GPoint(101, 115)
 #define TIME_ASCENT 44
 #define TIME_TRACKING_X10 (-10)
-#define TIME_UNDERLINE_RECT GRect(83, 122, 34, 2)
+// 下線の幅は時刻のフォントサイズと揃える (仕様書の 34px / 34 と同じ比率)
+#define TIME_UNDERLINE_RECT GRect(78, 122, 44, 2)
 
 // 8px では「6」が潰れて読めないため 9px にしている
 #define DATE_ANCHOR GPoint(100, 136)
