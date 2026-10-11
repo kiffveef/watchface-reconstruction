@@ -1,0 +1,9 @@
+
+/.claude/
+/.mcp.json
+/.serena/
+# Pebble build artifacts
+/build/
+/.lock-waf*
+# グローバルの ~/.config/git/ignore で .github が除外されているため、このリポジトリでは追跡する
+!.github/

@@ -1,0 +1,54 @@
+{
+  "name": "reconstruction",
+  "author": "kiffveef",
+  "version": "0.1.0",
+  "keywords": [
+    "pebble-app"
+  ],
+  "private": true,
+  "dependencies": {},
+  "pebble": {
+    "displayName": "Reconstruction",
+    "uuid": "6bf061f5-e80d-4970-9f5d-1cbe25f5713a",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "emery"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "resources": {
+      "media": [
+        {
+          "type": "font",
+          "name": "FONT_TIME_44",
+          "file": "fonts/Poppins-ExtraBold.ttf",
+          "characterRegex": "[0-9:]",
+          "compatibility": "2.7"
+        },
+        {
+          "type": "font",
+          "name": "FONT_DATE_10",
+          "file": "fonts/Poppins-Bold.ttf",
+          "characterRegex": "[A-Z0-9 ]",
+          "compatibility": "2.7"
+        },
+        {
+          "type": "font",
+          "name": "FONT_VALUE_15",
+          "file": "fonts/Poppins-Bold.ttf",
+          "characterRegex": "[0-9,-]",
+          "compatibility": "2.7"
+        },
+        {
+          "type": "font",
+          "name": "FONT_LABEL_9",
+          "file": "fonts/Poppins-Bold.ttf",
+          "characterRegex": "[A-Z]",
+          "compatibility": "2.7"
+        }
+      ]
+    }
+  }
+}
