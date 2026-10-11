@@ -1,5 +1,6 @@
 #include <pebble.h>
 #include "background.h"
+#include "disc.h"
 #include "layout.h"
 #include "text.h"
 
@@ -17,7 +18,10 @@ static GFont s_font_date;
 static GFont s_font_value;
 static GFont s_font_label;
 
-static BackgroundState s_background_state;
+// 円盤の針に使う最新の tick 時刻
+static struct tm s_now;
+static bool s_bt_connected;
+static bool s_battery_low;
 static char s_time_buf[TIME_BUF_LEN];
 static char s_date_buf[DATE_BUF_LEN];
 // 負の値は取得不可 (`--` 表示)
@@ -27,7 +31,7 @@ static int32_t s_bpm = -1;
 // --- Drawing ---
 
 static void prv_background_update_proc(Layer *layer, GContext *ctx) {
-  background_render(ctx, layer_get_bounds(layer), &s_background_state);
+  background_render(ctx, layer_get_bounds(layer));
 }
 
 static GRect prv_draw_value(GContext *ctx, int32_t value, GPoint anchor, GTextAlignment align) {
@@ -61,8 +65,14 @@ static void prv_dynamic_update_proc(Layer *layer, GContext *ctx) {
   const TextStyle time_style = { s_font_time, TIME_ASCENT, TIME_TRACKING_X10 };
   const TextStyle date_style = { s_font_date, DATE_ASCENT, DATE_TRACKING_X10 };
 
+  disc_draw_minute_fan(ctx, &s_now, s_bt_connected);
+  disc_draw_hour_mirror(ctx, &s_now);
+  disc_draw_cap(ctx, s_battery_low);
+
   text_draw(ctx, s_time_buf, &time_style, TIME_ANCHOR, GTextAlignmentCenter, COLOR_WHITE);
-  text_draw(ctx, s_date_buf, &date_style, DATE_ANCHOR, GTextAlignmentCenter, COLOR_DATE);
+  graphics_context_set_fill_color(ctx, COLOR_LIME);
+  graphics_fill_rect(ctx, TIME_UNDERLINE_RECT, 0, GCornerNone);
+  text_draw(ctx, s_date_buf, &date_style, DATE_ANCHOR, GTextAlignmentCenter, COLOR_LIGHT);
   prv_draw_data(ctx, s_steps, STEPS_ANCHOR, STEPS_LABEL, GTextAlignmentLeft);
   prv_draw_data(ctx, s_bpm, BPM_ANCHOR, BPM_LABEL, GTextAlignmentRight);
 }
@@ -102,6 +112,7 @@ static bool prv_is_battery_low(BatteryChargeState charge) {
 // --- Handlers ---
 
 static void prv_tick_handler(struct tm *tick_time, TimeUnits units_changed) {
+  s_now = *tick_time;
   prv_update_time(tick_time);
   if (units_changed & DAY_UNIT) {
     prv_update_date(tick_time);
@@ -118,22 +129,20 @@ static void prv_health_handler(HealthEventType event, void *context) {
 }
 
 static void prv_connection_handler(bool connected) {
-  if (s_background_state.bt_connected && !connected) {
+  if (s_bt_connected && !connected) {
     vibes_short_pulse();
   }
-  s_background_state.bt_connected = connected;
-  background_invalidate();
-  layer_mark_dirty(s_background_layer);
+  s_bt_connected = connected;
+  layer_mark_dirty(s_dynamic_layer);
 }
 
 static void prv_battery_handler(BatteryChargeState charge) {
   bool low = prv_is_battery_low(charge);
-  if (low == s_background_state.battery_low) {
+  if (low == s_battery_low) {
     return;
   }
-  s_background_state.battery_low = low;
-  background_invalidate();
-  layer_mark_dirty(s_background_layer);
+  s_battery_low = low;
+  layer_mark_dirty(s_dynamic_layer);
 }
 
 // --- Window ---
@@ -142,10 +151,10 @@ static void prv_window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
 
-  s_font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TIME_44));
-  s_font_date = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DATE_10));
-  s_font_value = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_VALUE_15));
-  s_font_label = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LABEL_9));
+  s_font_time = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TIME_34));
+  s_font_date = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_DATE_9));
+  s_font_value = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_VALUE_13));
+  s_font_label = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_LABEL_8));
 
   s_background_layer = layer_create(bounds);
   layer_set_update_proc(s_background_layer, prv_background_update_proc);
@@ -169,11 +178,11 @@ static void prv_window_unload(Window *window) {
 
 static void prv_init(void) {
   time_t now = time(NULL);
-  struct tm *t = localtime(&now);
-  prv_update_time(t);
-  prv_update_date(t);
-  s_background_state.bt_connected = connection_service_peek_pebble_app_connection();
-  s_background_state.battery_low = prv_is_battery_low(battery_state_service_peek());
+  s_now = *localtime(&now);
+  prv_update_time(&s_now);
+  prv_update_date(&s_now);
+  s_bt_connected = connection_service_peek_pebble_app_connection();
+  s_battery_low = prv_is_battery_low(battery_state_service_peek());
   if (health_service_events_subscribe(prv_health_handler, NULL)) {
     prv_update_health();
   }

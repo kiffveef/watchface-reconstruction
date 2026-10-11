@@ -8,74 +8,66 @@
 #define COLOR_GREEN GColorMayGreen
 #define COLOR_WHITE GColorWhite
 #define COLOR_GRAY GColorDarkGray
-#define COLOR_DATE GColorLightGray
+#define COLOR_LIGHT GColorLightGray
 // 元画像 TERMINAL の赤帯 (#AD2A4C) に最も近い色。オレンジは緑と補色で浮くため避けた
 #define COLOR_ALERT GColorJazzberryJam
 
 #define BATTERY_LOW_PERCENT 20
 
-// --- V shapes (折れ線 3点) ---
-#define V_SHADOW_POINTS { {15, 31}, {109, 193}, {203, 31} }
-#define V_SHADOW_WIDTH 3.8f
-#define V_LIME_POINTS { {6, 24}, {100, 186}, {194, 24} }
-#define V_LIME_WIDTH 7.0f
-#define V_INNER_POINTS { {26, 18}, {100, 146}, {174, 18} }
+// --- Disc geometry (角度は 12時 = 0°、時計回り) ---
+#define DISC_CENTER GPoint(100, 100)
+#define DISC_RADIUS 106
+#define DISC_INNER_RADIUS 78
+#define DISC_CAP_RADIUS 51
 
-// --- Axis ---
-#define AXIS_X 100
-#define AXIS_Y_START 150
-#define AXIS_Y_END 204
-#define AXIS_DASH_ON 14
-#define AXIS_DASH_OFF 5
-#define AXIS_TICK_HALF_WIDTH 3
-#define AXIS_TICK_YS { 160, 177, 194 }
+// 内円の縁 (リム側に置く LightGray の弧)
+#define DISC_EDGE_OUTER_RADIUS 80
+#define DISC_EDGE_THICKNESS 2
+#define DISC_EDGE_START_DEG 170
+#define DISC_EDGE_END_DEG 310
 
-// --- Short rules ---
-#define RULE_LEFT_START GPoint(6, 200)
-#define RULE_LEFT_END GPoint(40, 200)
-#define RULE_RIGHT_START GPoint(160, 200)
-#define RULE_RIGHT_END GPoint(194, 200)
+// リムの明るい範囲。CHECKER は黒 + DarkGray の 2×2 市松で #2A2A2A 相当を作る
+#define RIM_CHECKER_A_START_DEG 150
+#define RIM_SOLID_START_DEG 214
+#define RIM_SOLID_END_DEG 252
+#define RIM_CHECKER_B_END_DEG 300
 
-#define TIME_UNDERLINE_RECT GRect(78, 92, 44, 2)
+// --- Minute fan ---
+// 開き角のうち先端からこの割合までを明るいライムにする
+#define FAN_LIME_PERCENT 34
+// 後縁の分光: 半径 0.74R〜R+1 に幅 1.4° の弧を 1.6° 間隔で3本 (角度は 1/10 度)
+#define FAN_IRIS_INNER_RADIUS 78
+#define FAN_IRIS_OUTER_RADIUS 107
+#define FAN_IRIS_WIDTH_X10 14
+#define FAN_IRIS_STEP_X10 16
 
-// --- Checker ---
-#define CHECKER_ORIGIN GPoint(4, 196)
-#define CHECKER_CELL 5
-#define CHECKER_COLS 3
-#define CHECKER_ROWS 2
-
-// --- Background dots (ベイヤーディザ) ---
-#define DOT_SPACING 10
-#define DOT_SIZE 4
-#define DOT_COLS 21
-#define DOT_ROWS 24
-// t = BASE + x/W*X + y/H*Y (左上が緑、右下へ黒)
-#define DOT_T_BASE 0.25f
-#define DOT_T_X 0.45f
-#define DOT_T_Y 0.55f
-#define DOT_STOPS { GColorMayGreen, GColorDarkGray, GColorBlack }
-#define DOT_BAYER { {0, 8, 2, 10}, {12, 4, 14, 6}, {3, 11, 1, 9}, {15, 7, 13, 5} }
-// 文字が埋もれないよう点を打たない領域 (時刻・日付・下段データ)
-#define DOT_EXCLUDE_RECTS { GRect(70, 52, 60, 48), GRect(118, 112, 78, 14), GRect(0, 204, 200, 24) }
+// --- Hour mirror ---
+#define MIRROR_INNER_RADIUS 47
+#define MIRROR_OUTER_RADIUS 76
+#define MIRROR_IRIS_WIDTH_PERCENT 2
 
 // --- Text (anchor の y はベースライン) ---
 // ASCENT はベースラインから描画矩形の上端までの距離。グリフ上の余白込みでエミュレータで合わせた値
-#define TIME_ANCHOR GPoint(100, 82)
-#define TIME_ASCENT 44
-#define TIME_TRACKING_X10 (-20)
+// 数字の実際の塗り範囲がキャップの中心 (100, 100) に来る位置。字幅計算に含まれる余白ぶん x を 1px 右に寄せている
+#define TIME_ANCHOR GPoint(101, 112)
+#define TIME_ASCENT 34
+#define TIME_TRACKING_X10 (-18)
+#define TIME_UNDERLINE_RECT GRect(83, 121, 34, 2)
 
-#define DATE_ANCHOR GPoint(100, 110)
-#define DATE_ASCENT 10
-#define DATE_TRACKING_X10 15
+// 8px では「6」が潰れて読めないため 9px にしている
+#define DATE_ANCHOR GPoint(100, 136)
+#define DATE_ASCENT 9
+#define DATE_TRACKING_X10 10
 #define DATE_FORMAT "%a %d %b"
 
-#define VALUE_ASCENT 15
-#define LABEL_ASCENT 9
+#define VALUE_ASCENT 13
+#define LABEL_ASCENT 8
 #define LABEL_TRACKING_X10 10
 
-#define STEPS_ANCHOR GPoint(6, 222)
+// 歩数は「数字 STEPS」で数字の左端、心拍は「数字 BPM」でラベルの右端を固定する
+#define STEPS_ANCHOR GPoint(10, 222)
 #define STEPS_LABEL "STEPS"
-#define BPM_ANCHOR GPoint(194, 222)
+#define BPM_ANCHOR GPoint(190, 222)
 #define BPM_LABEL "BPM"
 // 値とラベルの間隔。桁数によらず左右で同じ並びに見えるよう、ラベルは値の端から置く
 #define DATA_LABEL_GAP 4

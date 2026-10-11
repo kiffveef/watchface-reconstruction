@@ -22,28 +22,28 @@
       "media": [
         {
           "type": "font",
-          "name": "FONT_TIME_44",
+          "name": "FONT_TIME_34",
           "file": "fonts/Outfit-Time.ttf",
           "characterRegex": "[0-9:]",
           "compatibility": "2.7"
         },
         {
           "type": "font",
-          "name": "FONT_DATE_10",
+          "name": "FONT_DATE_9",
           "file": "fonts/Outfit-Text.ttf",
           "characterRegex": "[A-Z0-9 ]",
           "compatibility": "2.7"
         },
         {
           "type": "font",
-          "name": "FONT_VALUE_15",
+          "name": "FONT_VALUE_13",
           "file": "fonts/Outfit-Value.ttf",
           "characterRegex": "[0-9,-]",
           "compatibility": "2.7"
         },
         {
           "type": "font",
-          "name": "FONT_LABEL_9",
+          "name": "FONT_LABEL_8",
           "file": "fonts/Outfit-Text.ttf",
           "characterRegex": "[A-Z]",
           "compatibility": "2.7"
