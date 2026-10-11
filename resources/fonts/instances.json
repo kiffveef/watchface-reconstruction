@@ -1,5 +1,8 @@
 {
   "source": "source/Outfit[wght].ttf",
+  "glyph_substitutions": {
+    "1": "one.ss01"
+  },
   "instances": {
     "Outfit-Time.ttf": { "wght": 700 },
     "Outfit-Text.ttf": { "wght": 600 }
