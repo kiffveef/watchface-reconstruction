@@ -54,4 +54,15 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: dist/*.pbw
+          # .pbw にはフォントを組み込んでいるため、OFL の条件として著作権表示とライセンスを配布物に添える
+          # (body は自動生成のリリースノートの前に置かれる)
+          body: |
+            ## Fonts
+
+            This watchface embeds the following fonts, licensed under the [SIL Open Font License, Version 1.1](https://openfontlicense.org).
+
+            - Saira — Copyright 2020 The Saira Project Authors ([license](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/resources/fonts/OFL-Saira.txt))
+            - Outfit — Copyright 2021 The Outfit Project Authors ([license](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/resources/fonts/OFL-Outfit.txt))
+
+            The source code is released under the [MIT License](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/LICENSE).
           generate_release_notes: true
