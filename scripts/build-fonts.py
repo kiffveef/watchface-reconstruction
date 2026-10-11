@@ -38,6 +38,8 @@ def main() -> None:
     for filename, axes in config["instances"].items():
         font = instantiateVariableFont(TTFont(source), axes)
         substitute_glyphs(font, substitutions)
+        # 保存日時を書き込むと同じ設定でも生成のたびに差分が出るため、元フォントの日時を保つ
+        font.recalcTimestamp = False
         out = FONTS_DIR / filename
         font.save(out)
         print(f"{out.relative_to(FONTS_DIR.parent.parent)}: {axes}")
