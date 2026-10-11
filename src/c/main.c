@@ -121,7 +121,9 @@ static void prv_tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 }
 
 static void prv_health_handler(HealthEventType event, void *context) {
-  if (event != HealthEventMovementUpdate && event != HealthEventHeartRateUpdate) {
+  // SignificantUpdate は日付が変わったときなどに届き、歩数を読み直さないと前日の値が残る
+  if (event != HealthEventSignificantUpdate && event != HealthEventMovementUpdate
+      && event != HealthEventHeartRateUpdate) {
     return;
   }
   prv_update_health();
